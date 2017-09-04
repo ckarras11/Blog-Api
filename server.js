@@ -45,7 +45,35 @@ app.post('/blog-posts', jsonParser, (request, response) => {
 app.delete('/blog-posts/:id', (request, response) => {
     BlogPosts.delete(request.params.id);
     response.status(204).end();
-})
+});
+
+// Put request
+
+app.put('/blog-posts/:id', jsonParser, (request, response) => {
+    const requiredFields = ['title', 'content', 'author'];
+    requiredFields.forEach((field, index) => {
+        field = requiredFields[index];
+        if(!(field in request.body)){
+            const message = `Body must include field ${field}`
+            console.log(message);
+            response.status(400).send(message);
+        }
+    });
+    if(request.params.id !== request.body.id){
+        const message = `Params id ${request.params.id} must match body id ${request.body.id}`;
+        console.log(message);
+        response.status(400).send(message);
+    }
+    BlogPosts.update({
+        id: request.params.id,
+        title: request.body.title,
+        content: request.body.content,
+        author: request.body.author,
+        publishDate: request.body.date
+    });
+    response.status(204).end();
+});
+
 
 
 // Initializes app listening on port 8080
