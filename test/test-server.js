@@ -52,6 +52,7 @@ describe('blog-posts', function () {
     })
 
     it('should remove an item on DELETE', function () {
+        test
 
     })
 
