@@ -25,6 +25,10 @@ describe('blog-posts', function () {
                 res.body.length.should.be.at.least(1);
                 res.should.be.json;
                 res.body.should.be.a('array');
+                const expectedKeys = ['id', 'author', 'content', 'title', 'publishDate'];
+                res.body.forEach(function (item) {
+                    item.should.include.keys(expectedKeys);
+                })
             });
     });
 
@@ -42,18 +46,21 @@ describe('blog-posts', function () {
                 res.should.have.status(201);
                 res.should.be.json;
                 res.body.should.be.a('object');
-                console.log(Object.keys(res.body).length)
-                res.body.forEach(key => {
-                    res.body[key]
-                })
-                
-        })
+                res.body.should.deep.equal(Object.assign(newPost, { id: res.body.id, publishDate: res.body.publishDate }));
+            })
 
     })
 
     it('should remove an item on DELETE', function () {
-        test
-
+        return chai.request(app)
+            .get('/blog-posts')
+            .then(function (res) {
+                return chai.request(app)
+                    .delete(`/blog-posts/${res.body[0].id}`)
+            })
+            .then(function (res) {
+                res.should.have.status(204);
+            })
     })
 
     it('should update items on PUT', function () {
