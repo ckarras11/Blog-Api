@@ -64,7 +64,22 @@ describe('blog-posts', function () {
     })
 
     it('should update items on PUT', function () {
+        const updateData = { title: "newTitle", content: "newContent", author: "Chris"};
 
-    })
+        return chai.request(app)
+            .get('/blog-posts')
+            .then(function (res) {
+                updateData.id = res.body[0].id;
+                return chai.request(app)
+                    .put(`/blog-posts/${updateData.id}`)
+                    .send(updateData);
+            })
+            .then(function (res) {
+                res.should.have.status(200);
+                res.should.be.json;
+                res.body.should.be.a('object');
+                res.body.should.deep.equal(updateData);
 
+            })
+    });
 })
